@@ -14,7 +14,7 @@
  # ":cache yes" on the SRC environment and manually evalute that
  # environment.
 
-* LaTeX Header							   :noexport:
+* COMMENT LaTeX Header							   :noexport:
 
 #+LaTeX_CLASS: beamer
 #+LaTeX_CLASS_OPTIONS: [presentation]
@@ -46,11 +46,15 @@
 
 * Introduction
 
-#+NAME: load-circular-library
+#+NAME: R-set-up
 #+BEGIN_SRC R :exports none
 require("circular")
 require("ascii")
 options(asciiType="org")
+datadir <- "../Data/"
+datafile <- function(filename, dir=datadir) {
+    paste(datadir, filename, sep="")
+}
 #+END_SRC
 
 ** Examples
@@ -78,6 +82,16 @@ Wish to analyze data in which response is a "direction":
 ascii(matrix(wind[1:40], ncol=5, byrow=TRUE), digits=2,
       include.rownames=FALSE, include.colnames=FALSE)
 #+END_SRC
+
+#+RESULTS:
+ | 6.23 | 1.03 | 0.15 | 0.72 | 2.20 |
+ | 0.46 | 0.63 | 1.45 | 0.37 | 1.95 |
+ | 0.08 | 0.15 | 0.33 | 0.09 | 0.09 |
+ | 6.23 | 0.05 | 6.14 | 6.28 | 6.17 |
+ | 6.24 | 6.02 | 6.14 | 6.25 | 0.01 |
+ | 5.38 | 5.30 | 5.63 | 0.77 | 1.34 |
+ | 6.14 | 0.22 | 6.23 | 2.33 | 3.61 |
+ | 0.49 | 6.12 | 0.01 | 0.00 | 0.46 |
 
 *** Plot
     :PROPERTIES:
@@ -107,6 +121,7 @@ ticks.circular(circular(seq(0, (15/8)*pi, pi/8)),
 #+END_SRC
 
 #+RESULTS: windDataPlot
+[[file:Plots/wind.png]]
 
 ** Arrival Times at an ICU
 
@@ -125,6 +140,16 @@ ascii(matrix(fisherB1[1:32], ncol=4, byrow=TRUE), digits=2,
       include.rownames=FALSE, include.colnames=FALSE)
 #+END_SRC
 
+#+RESULTS:
+ | 11.00 | 17.00 | 23.15 | 10.00 |
+ | 12.00 |  8.45 | 16.00 | 10.00 |
+ | 15.30 | 20.20 |  4.00 | 12.00 |
+ |  2.20 | 12.00 |  5.30 |  7.30 |
+ | 12.00 | 16.00 | 16.00 |  1.30 |
+ | 11.05 | 16.00 | 19.00 | 17.45 |
+ | 20.20 | 21.00 | 12.00 | 12.00 |
+ | 18.00 | 22.00 | 22.00 | 22.05 |
+
 *** Plot
     :PROPERTIES:
     :BEAMER_col: 0.5
@@ -140,6 +165,7 @@ plot(fisherB1c, cex=1.5, axes=TRUE,
 #+END_SRC
 
 #+RESULTS: icuDataPlot
+[[file:Plots/icu.png]]
 
 ** Primate Vertebrae
 
@@ -158,7 +184,7 @@ plot(fisherB1c, cex=1.5, axes=TRUE,
    :END:
 
 #+BEGIN_SRC R :exports none :eval no
-vertebrae <- read.table("Data/vertebrae-superior-facet.txt", header=TRUE)
+vertebrae <- read.table(datafile("vertebrae-superior-facet.txt"), header=TRUE)
 vcol <- rep(c("red","green","blue"), table(vertebrae$species))
 require("sphereplot")
 rgl.sphgrid(radius=1,
@@ -196,7 +222,7 @@ rgl.close()
    - temperature
 
 #+BEGIN_SRC R :exports none
-butterflies <- read.table("Data/butterfly.txt", header=TRUE)
+butterflies <- read.table(datafile("butterfly.txt"), header=TRUE)
 #+END_SRC
 
 ** Why is the Analysis of Directional Data Different?
@@ -218,6 +244,7 @@ points(circular(mean(wind[1:3]), units="radians", template="geographics"),
 
 #+ATTR_LaTeX: :height 0.5\textheight
 #+RESULTS: meanAnglePlot
+[[file:Plots/meanAngle.png]]
 
 * Graphical Display of Directional Data
 
@@ -269,6 +296,7 @@ points(fisherB10c$set3, zero=pi/2,
 #+CAPTION: three different experimental conditions:
 #+ATTR_LaTeX: :height 0.6\textheight
 #+RESULTS: antsDataPlot
+[[file:Plots/ants.png]]
 
 ** Graphical Display of Circular Data (in R) (ctd)
    :PROPERTIES:
@@ -322,6 +350,7 @@ rose.diag(windc, bins=16, col="darkgrey",
 #+CAPTION: (segment radii are proportional to square roots of counts).
 #+ATTR_LaTeX: :height 0.7\textheight
 #+RESULTS: windRose
+[[file:Plots/windRose.png]]
 
 ** Changing the Binwidth
 
@@ -350,6 +379,7 @@ rose.diag(windc, bins=32, col="darkgrey",
 #+END_SRC
 
 #+RESULTS: windRoseWideBins
+[[file:Plots/windRoseWide.png]]
 
 *** Narrow Bins
     :PROPERTIES:
@@ -364,6 +394,7 @@ rose.diag(windc, bins=32, col="darkgrey",
 #+END_SRC
 
 #+RESULTS: windRoseNarrowBins
+[[file:Plots/windRoseNarrow.png]]
 
 ** Changing the Radii
 
@@ -394,6 +425,7 @@ rose.diag(windc, bins=16, col="darkgrey",
 #+CAPTION: (segment radii proportional to counts).
 #+ATTR_LaTeX: :height 0.7\textheight
 #+RESULTS: windRoseLinear
+[[file:Plots/windRoseLinear.png]]
 
 ** Kernel Density Estimates
 
@@ -428,6 +460,7 @@ ticks.circular(circular(seq(0, (15/8)*pi, pi/8)),
 #+CAPTION: and kernel density estimate.
 #+ATTR_LaTeX: :height 0.7\textheight
 #+RESULTS: windKdens
+[[file:Plots/windKdens.png]]
 
 ** Spherical Data
 
@@ -445,6 +478,12 @@ y <- cos(theta)
 ascii(cbind(theta, x, y), digits=2,
       include.rownames=FALSE, include.colnames=TRUE)
 #+END_SRC
+
+#+RESULTS:
+ | theta |     x |    y |
+ |  6.23 | -0.06 | 1.00 |
+ |  1.03 |  0.86 | 0.51 |
+ |  0.15 |  0.15 | 0.99 |
 
 
 #+BEGIN_SRC R :exports none
@@ -497,6 +536,7 @@ points(circular(meanDirectionRadians, units="radians", template="geographics"),
 #+CAPTION: and their sample mean direction.
 #+ATTR_LaTeX: :height 0.6\textheight
 #+RESULTS: meanDirection
+[[file:Plots/meanDirection.png]]
 
 * Aside: Generating from the Uniform Distribution on the Sphere
 
@@ -523,6 +563,10 @@ d <- 2:10
 ar <- rbind("dimension"=d, "accept rate (%)"= 100*accRate(d))
 ascii(ar, digits=0, include.rownames=TRUE, include.colnames=FALSE)
 #+END_SRC
+
+#+RESULTS:
+| dimension       |  2 |  3 |  4 |  5 | 6 | 7 | 8 | 9 | 10 |
+| accept rate (%) | 79 | 52 | 31 | 16 | 8 | 4 | 2 | 1 |  0 |
 
 ** Code for Timing Results
    :PROPERTIES:
@@ -598,10 +642,24 @@ imrlPN <- function(mrl, dimen, lower = 1e-5, upper = 18) {
 }
 
 mrlLvMF <-
-    function(kappa, dimen) besselI(kappa, dimen/2) / besselI(kappa, dimen/2 - 1)
+    function(kappa, dimen) {
+        besselI(kappa, dimen/2, expon.scaled = TRUE) /
+            besselI(kappa, dimen/2 - 1, expon.scaled = TRUE)
+    }
 
-imrlLvMF <- function(mrl, dimen, lower = 1e-5, upper = 700) {
-    uniroot(function(x) mrlLvMF(x, dimen) - mrl, c(lower, upper))$root
+imrlLvMF <- function(mrl, dimen,
+                     lower = .Machine$double.eps^0.25, upper = 1e4) {
+    if ((mrl >= 0) & (mrl <= 1)) {
+        try(uniroot(function(x) mrlLvMF(x, dimen) - mrl,
+                    interval=c(lower, upper), extendInt = "upX")$root)
+    } else {
+        NA
+    }
+}
+
+constLvMF <- function(kappa, dimen) {
+    ( exp(-kappa)*(kappa/2)^(dimen/2 - 1) ) /
+        ( gamma(dimen/2)*besselI(kappa, dimen/2 - 1, expon.scaled = TRUE) )
 }
 
 dPNAngle <- function(theta, gamma, dimen) {
@@ -707,3 +765,303 @@ plotPNvLvMF(4)
 #+ATTR_LaTeX: :height 0.6\textheight
 #+RESULTS: PNvLvMF4
 [[file:Plots/PNvLvMF4.png]]
+
+* Regression
+
+** Gould's Model
+
+   A.k.a., the [[https://commons.wikimedia.org/wiki/File:Barber-pole-01.gif#][barber pole]] model.
+
+** Gould's Model: Likelihood
+
+Calculate the (profile) log-likelihood for Gould (1969 Biometrics)
+model for simple (single predictor) regression with an intercept.  For
+fixed "slope" \beta, this function "profiles out" (maximizes over) the
+"intercept" term and optionally the concentration parameter \kappa.
+
+#+BEGIN_SRC R :exports code
+loglklhd.gould <- function(beta, theta, x, do.kappa=FALSE) {
+    res <- sapply(beta,
+                  function(b, th, x) {
+                      sqrt(sum(cos(th - b*x))^2
+                           + sum(sin(th - b*x))^2)
+                  },
+                  th=theta, x=x)
+    if (do.kappa) {
+        n <- length(theta)
+        kappa <- sapply(res/n, imrlLvMF, dimen=2)
+        res <- n*log(constLvMF(kappa, dimen=2)) + kappa*res
+    }
+    res
+}
+#+END_SRC
+
+#+NAME: gouldPlot
+#+BEGIN_SRC R :exports none :eval no :var do.kappa=0
+period <- 2*pi/(min(diff(sort(x)))) # Useful only for lattice x
+nperiods <- 1
+curve(loglklhd.gould(beta, theta, x, do.kappa), xname="beta", 
+      xlim=beta + nperiods*period*c(-1.125,1.125), n=nperiods*200,
+      xlab=expression(beta),
+      ylab="Log-Likelihood")
+abline(v = beta + ((-nperiods):nperiods)*period, lty=3) # for lattice x
+#+END_SRC
+
+** Gould's Model with Equally Spaced X
+
+#+NAME: gouldLatticeXData
+#+BEGIN_SRC R :exports none :eval no
+alpha <- 0
+beta <- 1
+kappa = 2.5
+x <- seq(-1, 1, length=10)
+mu <- as.circular((alpha + beta*x) %% (2*pi))
+theta <- as.circular(mu + rvonmises(length(mu), mu=0, kappa=kappa))
+#+END_SRC
+
+#+NAME: gouldLatticeXPlot1
+#+HEADER: :file Plots/gouldLatticeX1.png :width 480 :height 480
+#+BEGIN_SRC R :exports both :results output graphics :var do.kappa=0
+<<gouldLatticeXData>>
+<<gouldPlot>>
+#+END_SRC
+
+#+NAME: gouldLatticeXPlot2
+#+HEADER: :file Plots/gouldLatticeX2.png :width 480 :height 480
+#+BEGIN_SRC R :exports results :results output graphics :var do.kappa=1
+<<gouldPlot>>
+#+END_SRC
+
+** Gould's Model with Equally-Spaced X: Kappa Not Profiled Out
+   :PROPERTIES:
+   :BEAMER_env: fullframe
+   :END:
+
+#+CAPTION: Gould's model log-likelihood with n=10 equally-spaced x's;
+#+CAPTION: \kappa not profiled out.
+#+ATTR_LaTeX: :height 0.8\textheight
+#+RESULTS: gouldLatticeXPlot1
+[[file:Plots/gouldLatticeX1.png]]
+
+** Gould's Model with Equally-Spaced X: Kappa Profiled Out
+   :PROPERTIES:
+   :BEAMER_env: fullframe
+   :END:
+
+#+CAPTION: Gould's model log-likelihood with n=10 equally-spaced x's;
+#+CAPTION: \kappa profiled out.
+#+ATTR_LaTeX: :height 0.8\textheight
+#+RESULTS: gouldLatticeXPlot2
+[[file:Plots/gouldLatticeX2.png]]
+
+** Gould's Model with Random X: Data Generation
+
+#+BEGIN_SRC R
+alpha <- 0
+beta <- 1
+kappa = 2.5
+x <- rnorm(10)
+mu <- as.circular((alpha + beta*x) %% (2*pi))
+theta <- as.circular(mu + rvonmises(length(mu), mu=0, kappa=kappa))
+#+END_SRC
+
+#+NAME: gouldRandomXPlot1
+#+HEADER: :file Plots/gouldRandomX1.png :width 480 :height 480
+#+BEGIN_SRC R :exports results :results output graphics :var do.kappa=0
+<<gouldPlot>>
+#+END_SRC
+
+#+NAME: gouldRandomXPlot2
+#+HEADER: :file Plots/gouldRandomX2.png :width 480 :height 480
+#+BEGIN_SRC R :exports results :results output graphics :var do.kappa=1
+<<gouldPlot>>
+#+END_SRC
+
+
+** Gould's Model with Random X: Kappa Not Profiled Out
+   :PROPERTIES:
+   :BEAMER_env: fullframe
+   :END:
+
+#+CAPTION: Gould's model log-likelihood with n=10 random normal x's;
+#+CAPTION: \kappa not profiled out.
+#+ATTR_LaTeX: :height 0.8\textheight
+#+RESULTS: gouldRandomXPlot1
+[[file:Plots/gouldRandomX1.png]]
+
+
+** Gould's Model with Random X: Kappa Profiled Out
+   :PROPERTIES:
+   :BEAMER_env: fullframe
+   :END:
+
+#+CAPTION: Gould's model log-likelihood with n=10 random normal x's;
+#+CAPTION: \kappa profiled out.
+#+ATTR_LaTeX: :height 0.8\textheight
+#+RESULTS: gouldRandomXPlot2
+[[file:Plots/gouldRandomX2.png]]
+
+
+
+** Fisher-Lee Model: Likelihood
+
+Calculate the (profile) log-likelihood for the Fisher-Lee (1992
+Biometrics) model.  For fixed "slope" \beta, this function "profiles
+out" (maximizes over) the "intercept" term and optionally the
+concentration parameter \kappa.  Computing this with biggish matrix
+multiplies instead of using =apply()= or looping.
+
+#+BEGIN_SRC R :exports code
+loglklhdFisherLee <- function(beta, theta, X, do.kappa=FALSE) {
+    n <- length(theta)
+    nbeta <- dim(beta)[2]
+    if (dim(X)[1] != n) {
+        stop("Number of rows of X must equal length of theta.")
+    }
+    if (dim(beta)[1] != dim(X)[2]) {
+        stop("Number of rows of beta must equal number of columns of X")
+    }
+    dev <- theta - 2*atan(X %*% beta)
+    res <- sqrt(apply(cos(dev), 2, sum)^2
+                + apply(sin(dev), 2, sum)^2)
+    if (do.kappa) {
+        kappa <- sapply(res/n, imrlLvMF, dimen=2)
+        res <- n*log(constLvMF(kappa, dimen=2)) + kappa*res
+    }
+    res
+}
+#+END_SRC
+
+#+NAME: fisherLeePlot1d
+#+BEGIN_SRC R :exports none :eval no :var do.kappa=0
+X <- matrix(x, ncol=1)
+b <- matrix(b, nrow=1)
+ll <- loglklhdFisherLee(b, theta, X, do.kappa)
+plot(as.vector(b), ll, type = "l",
+     xlab=expression(beta),
+     ylab="Log-Likelihood")
+#+END_SRC
+
+** Fisher-Lee Model with Random X: Data Generation
+
+Note that Fisher recommends centering the x values before fitting the
+model.  Here, to be certain that the model whose likelihood we plot is
+equivalent to the data generating model, we will center the x values
+before generating the responses.
+
+#+BEGIN_SRC R
+alpha <- 0
+beta <- 1
+kappa = 2.5
+x <- rnorm(10)
+x <- x - mean(x)
+mu <- as.circular(alpha + 2*atan(beta*x))
+theta <- as.circular(mu + rvonmises(length(mu), mu=0, kappa=kappa))
+#+END_SRC
+
+#+NAME: fisherLeeRandomXPlot1
+#+HEADER: :file Plots/fisherLeeRandomX1.png :width 480 :height 480
+#+BEGIN_SRC R :exports results :results output graphics :var do.kappa=0
+b <- seq(beta - 10, beta + 10, length = 400)
+<<fisherLeePlot1d>>
+#+END_SRC
+
+#+NAME: fisherLeeRandomXPlot2
+#+HEADER: :file Plots/fisherLeeRandomX2.png :width 480 :height 480
+#+BEGIN_SRC R :exports results :results output graphics :var do.kappa=1
+b <- seq(beta - 10, beta + 10, length = 400)
+<<fisherLeePlot1d>>
+#+END_SRC
+
+
+** FisherLee's Model with Random X: Kappa Not Profiled Out
+   :PROPERTIES:
+   :BEAMER_env: fullframe
+   :END:
+
+#+CAPTION: Fisher-Lee model log-likelihood with n=10 random normal x's;
+#+CAPTION: \kappa not profiled out.
+#+ATTR_LaTeX: :height 0.8\textheight
+#+RESULTS: fisherLeeRandomXPlot1
+[[file:Plots/fisherLeeRandomX1.png]]
+
+
+** Fisher-Lee Model with Random X: Kappa Profiled Out
+   :PROPERTIES:
+   :BEAMER_env: fullframe
+   :END:
+
+#+CAPTION: Fisher-Lee model log-likelihood with n=10 random normal x's;
+#+CAPTION: \kappa profiled out.
+#+ATTR_LaTeX: :height 0.8\textheight
+#+RESULTS: fisherLeeRandomXPlot2
+[[file:Plots/fisherLeeRandomX2.png]]
+
+
+** Blue Periwinkles
+
+#+BEGIN_SRC R
+periwinkles <- read.table(datafile("periwinkle.txt"), header=TRUE)
+#+END_SRC
+
+#+NAME: periwinklePlot
+#+HEADER: :file Plots/periwinkles.png :width 480 :height 480
+#+BEGIN_SRC R :exports results :results output graphics
+plot(periwinkles$x, periwinkles$theta, ylim = c(0, 2*360),
+     xlab = "Distance Moved", ylab = "Direction")
+points(periwinkles$x, 360 + periwinkles$theta)
+#+END_SRC
+
+** Plot of Periwinkle Data 
+   :PROPERTIES:
+   :BEAMER_env: fullframe
+   :END:
+
+#+CAPTION: Direction and distance moved by 31 small blue periwinkles.
+#+ATTR_LaTeX: :height 0.8\textheight
+#+RESULTS: periwinklePlot
+
+
+#+NAME: fisherLeePeriwinklePlot1
+#+HEADER: :file Plots/fisherLeePeriwinkles1.png :width 480 :height 480
+#+BEGIN_SRC R :exports results :results output graphics :var do.kappa=0
+x <- periwinkles$x
+x <- x - mean(x)
+theta <- periwinkles$theta * (pi/180)
+b <- seq(-2, 2, length=400)
+<<fisherLeePlot1d>>
+#+END_SRC
+
+#+NAME: fisherLeePeriwinklePlot2
+#+HEADER: :file Plots/fisherLeePeriwinkles2.png :width 480 :height 480
+#+BEGIN_SRC R :exports results :results output graphics :var do.kappa=1
+<<fisherLeePlot1d>>
+#+END_SRC
+
+** Fisher-Lee Model Log-Likelihood for Periwinkle Data 
+   :PROPERTIES:
+   :BEAMER_env: fullframe
+   :END:
+
+#+CAPTION: Fisher-Lee model log-likelihood for periwinkle data;
+#+CAPTION: \kappa not profiled out.
+#+ATTR_LaTeX: :height 0.8\textheight
+#+RESULTS: fisherLeePeriwinklePlot1
+
+** Fisher-Lee Model Log-Likelihood for Periwinkle Data 
+   :PROPERTIES:
+   :BEAMER_env: fullframe
+   :END:
+
+#+CAPTION: Fisher-Lee model log-likelihood for periwinkle data;
+#+CAPTION: \kappa  profiled out.
+#+ATTR_LaTeX: :height 0.8\textheight
+#+RESULTS: fisherLeePeriwinklePlot2
+
+** Fisher-Lee Model with Two Predictors
+
+#+CAPTION: Fisher-Lee profile log-likelihood for a simulated data set
+#+CAPTION: with n = 10, \kappa = 1.0, \beta_1 = 0.1, and \beta_2 = 0.1.
+#+CAPTION: The global maximum is indicated by an asterisk.
+#+ATTR_LaTeX: :height 0.6\textheight
+[[file:Pictures/messy2.png]]
